@@ -1,0 +1,22 @@
+{
+  "name": "fireboy-and-watergirl-forest-temple-p2p",
+  "version": "1.0.0",
+  "description": "Porting Fireboy and Watergirl in The Forest Temple (Kuil Hutan) with WebRTC P2P Multiplayer",
+  "main": "server.js",
+  "scripts": {
+    "build": "echo 'Static build ready'",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "fireboy",
+    "watergirl",
+    "forest-temple",
+    "kuil-hutan",
+    "p2p",
+    "multiplayer",
+    "webrtc",
+    "peerjs"
+  ],
+  "author": "Antigravity",
+  "license": "MIT"
+}
