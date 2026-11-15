@@ -1,9 +1,7 @@
 {
-  "version": 2,
-  "cleanUrls": true,
   "headers": [
     {
-      "source": "/assets/fonts/(.*)\\.fnt",
+      "source": "/(.*)\\.fnt",
       "headers": [
         {
           "key": "Content-Type",

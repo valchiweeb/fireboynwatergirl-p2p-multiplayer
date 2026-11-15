@@ -12,8 +12,8 @@ function ensureServerRunning(callback) {
     callback(null);
   });
   req.on('error', () => {
-    console.log('[INFO] Menjalankan server lokal (server.js)...');
-    const srv = spawn('node', ['server.js'], { stdio: 'ignore', detached: true });
+    console.log('[INFO] Menjalankan server lokal (local_server.js)...');
+    const srv = spawn('node', ['local_server.js'], { stdio: 'ignore', detached: true });
     srv.unref();
     setTimeout(() => callback(null), 1500);
   });

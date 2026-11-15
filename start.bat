@@ -23,7 +23,7 @@ echo [INFO] Menjalankan mode Lokal...
 where node >nul 2>nul
 if %ERRORLEVEL% equ 0 (
     start http://localhost:3000
-    node server.js
+    node local_server.js
     goto end
 )
 
