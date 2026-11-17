@@ -1,7 +1,7 @@
 @echo off
-title Fireboy and Watergirl P2P Multiplayer
+title Fireboy and Watergirl P2P Multiplayer - Master Collection
 echo =======================================================
-echo  Fireboy and Watergirl: Kuil Hutan (The Forest Temple)
+echo  Fireboy and Watergirl: Master Collection (Series 1 - 6)
 echo  P2P Multiplayer Edition
 echo =======================================================
 echo.

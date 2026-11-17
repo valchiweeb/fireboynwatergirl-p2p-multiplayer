@@ -37,13 +37,15 @@ class FireboyHandler(http.server.SimpleHTTPRequestHandler):
             return 'application/json'
         elif path.endswith('.wasm'):
             return 'application/wasm'
+        elif path.endswith('.fnt'):
+            return 'application/xml; charset=utf-8'
         return mime
 
 if __name__ == '__main__':
     local_ip = get_local_ip()
     with DualStackServer(('0.0.0.0', PORT), FireboyHandler) as httpd:
         print(f"=======================================================")
-        print(f"🔥 Fireboy & Watergirl: Kuil Hutan (The Forest Temple)")
+        print(f"🔥 Fireboy & Watergirl: Master Collection (Series 1 - 6)")
         print(f"🎮 P2P Multiplayer Edition Server running via Python!")
         print(f"🌐 Local URL:   http://localhost:{PORT}")
         print(f"📱 Network URL: http://{local_ip}:{PORT}")
