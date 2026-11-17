@@ -1,7 +1,7 @@
 {
-  "name": "fireboy-and-watergirl-forest-temple-p2p",
-  "version": "1.0.0",
-  "description": "Porting Fireboy and Watergirl in The Forest Temple (Kuil Hutan) with WebRTC P2P Multiplayer",
+  "name": "fireboy-and-watergirl-master-collection-p2p",
+  "version": "2.0.0",
+  "description": "Porting Fireboy and Watergirl Master Collection (Series 1-6) with WebRTC P2P Multiplayer",
   "scripts": {
     "build": "echo 'Static build ready'",
     "start": "node local_server.js"

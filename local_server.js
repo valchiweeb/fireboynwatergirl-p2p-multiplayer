@@ -76,8 +76,15 @@ const server = http.createServer((req, res) => {
     pathname = '/index.html';
   }
 
-  const safePath = path.normalize(pathname).replace(/^(\.\.[\/\\])+/, '');
-  const filePath = path.join(PUBLIC_DIR, safePath);
+  let safePath = path.normalize(pathname).replace(/^(\.\.[\/\\])+/, '');
+  let filePath = path.join(PUBLIC_DIR, safePath);
+
+  try {
+    const st = fs.statSync(filePath);
+    if (st.isDirectory()) {
+      filePath = path.join(filePath, 'index.html');
+    }
+  } catch (e) {}
 
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {

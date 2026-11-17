@@ -16,7 +16,10 @@
 (function (window) {
   'use strict';
 
-  const PEER_PREFIX = 'fw-forest-';
+  const getPeerPrefix = () => {
+    const sId = window.GAME_SERIES_ID || (window.location.pathname.match(/series\/(\d)/) ? window.location.pathname.match(/series\/(\d)/)[1] : '1');
+    return 'fw-s' + sId + '-';
+  };
   const ICE_SERVERS = [
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
@@ -471,7 +474,7 @@
     createHostRoom() {
       this.isHost = true;
       this.roomCode = this.generateRoomCode();
-      const peerId = PEER_PREFIX + this.roomCode.toLowerCase();
+      const peerId = getPeerPrefix() + this.roomCode.toLowerCase();
 
       if (this.ui.hostRoomCode) {
         this.ui.hostRoomCode.innerText = this.roomCode;
@@ -510,8 +513,8 @@
     joinRoom(roomCode) {
       this.isHost = false;
       this.roomCode = roomCode.toUpperCase();
-      const hostPeerId = PEER_PREFIX + this.roomCode.toLowerCase();
-      const myPeerId = PEER_PREFIX + 'guest-' + Math.random().toString(36).substring(2, 7);
+      const hostPeerId = getPeerPrefix() + this.roomCode.toLowerCase();
+      const myPeerId = getPeerPrefix() + 'guest-' + Math.random().toString(36).substring(2, 7);
 
       if (this.ui.joinStatusText) {
         this.ui.joinStatusText.innerHTML = `<span class="spinner"></span> Menghubungkan ke [${this.roomCode}]...`;

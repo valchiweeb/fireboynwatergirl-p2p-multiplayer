@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <title>Fireboy & Watergirl 6: Negeri Dongeng (Fairy Tales) - P2P Multiplayer</title>
+  
+  <link rel="icon" type="image/png" href="../../img/icon.png">
+  <link rel="apple-touch-icon" href="../../img/icon.png">
+  <link rel="stylesheet" href="../../css/style.css">
+
+  <script type="text/javascript">
+    window.GAME_SERIES_ID = 6;
+    window.requireNode = window.require;
+    window.require = undefined;
+    window.h5api = {
+      progress: function(p) {},
+      init: function() {}
+    };
+  </script>
+</head>
+<body>
+
+  <!-- =========================================
+       TOP HUD IN-GAME BAR
+  ========================================= -->
+  <header id="hud-overlay">
+    <div class="hud-left">
+      <a href="../../" class="hud-btn" style="text-decoration:none;display:inline-flex;align-items:center;" title="Kembali ke Game Hub">⬅ Menu Hub</a>
+      <button id="btn-hud-lobby" class="hud-btn" title="Pengaturan Room P2P">🎮 Lobi Room</button>
+      <span id="hud-status-badge" class="badge local">🟢 Lokal</span>
+      <span id="hud-ping-badge" class="badge ping-good" style="display:none;">📶 0 ms</span>
+      <span id="hud-role-badge" class="badge role">🔥 Fireboy</span>
+    </div>
+
+    <div class="hud-right">
+      <button id="btn-hud-mute" class="hud-btn" title="Matikan/Nyalakan Suara">🔊 Suara</button>
+      <button id="btn-hud-chat" class="hud-btn" title="Buka Pesan & Obrolan">💬 Chat</button>
+      <button id="btn-hud-fullscreen" class="hud-btn" title="Layar Penuh">⛶ Layar Penuh</button>
+    </div>
+  </header>
+
+  <!-- =========================================
+       GAME VIEWPORT
+  ========================================= -->
+  <main id="game-wrapper">
+    <div id="root">
+      <div id="container"></div>
+      <div id="hammer"></div>
+      <div id="debug-fps" style="color:#ff0000; position: absolute; top: 0; display:none;"></div>
+    </div>
+
+    <!-- Floating Chat Bubbles over Game -->
+    <div id="chat-floating-area"></div>
+
+    <!-- Mobile Virtual Touch D-Pad Controls -->
+    <div id="touch-controls">
+      <div class="touch-dpad">
+        <button id="touch-left" class="touch-btn" aria-label="Gerak Kiri">◀</button>
+        <button id="touch-right" class="touch-btn" aria-label="Gerak Kanan">▶</button>
+      </div>
+      <div class="touch-actions">
+        <button id="touch-jump" class="touch-btn" aria-label="Lompat">▲</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- =========================================
+       IN-GAME CHAT & EMOTE DRAWER
+  ========================================= -->
+  <aside id="chat-drawer">
+    <div class="chat-header">
+      <span>💬 Obrolan Tim (Series 6 P2P)</span>
+      <button id="btn-close-chat" class="hud-btn" style="padding:2px 8px;" onclick="document.getElementById('chat-drawer').classList.remove('open')">✕</button>
+    </div>
+
+    <div id="chat-log">
+      <div class="chat-bubble chat-other" style="font-size:12px;opacity:0.8;">
+        <em>Selamat datang! Gunakan tombol cepat di bawah atau ketik pesan.</em>
+      </div>
+    </div>
+
+    <div class="quick-emotes">
+      <button class="quick-emote-btn" data-msg="Ayo cepat! 🏃">🏃 Ayo cepat!</button>
+      <button class="quick-emote-btn" data-msg="Tunggu sebentar! ✋">✋ Tunggu!</button>
+      <button class="quick-emote-btn" data-msg="Lompat sekarang! ⬆️">⬆️ Lompat!</button>
+      <button class="quick-emote-btn" data-msg="Tarik tuasnya! 🕹️">🕹️ Tarik tuas!</button>
+      <button class="quick-emote-btn" data-msg="Injak tombol itu! 🔘">🔘 Injak tombol!</button>
+      <button class="quick-emote-btn" data-msg="GG / Mantap! 🎉">🎉 Mantap!</button>
+    </div>
+
+    <div class="chat-input-bar">
+      <input type="text" id="chat-input" placeholder="Ketik pesan..." maxlength="80">
+      <button id="btn-send-chat">Kirim</button>
+    </div>
+  </aside>
+
+  <!-- =========================================
+       LOBBY & MULTIPLAYER MODAL OVERLAY
+  ========================================= -->
+  <div id="lobby-overlay">
+    <div class="lobby-card">
+      <h1 class="lobby-title">Fireboy &amp; Watergirl</h1>
+      <p class="lobby-subtitle">Negeri Dongeng (Fairy Tales) — P2P Multiplayer Edition</p>
+
+      <!-- Mode Selector Tabs -->
+      <div class="mode-buttons">
+        <button id="btn-mode-local" class="mode-btn active">
+          <span style="font-size:20px;">🎮</span>
+          <span>Main Lokal</span>
+          <small style="opacity:0.7;font-size:11px;">1 Komputer</small>
+        </button>
+
+        <button id="btn-mode-host" class="mode-btn">
+          <span style="font-size:20px;">🌐</span>
+          <span>Buat Room</span>
+          <small style="opacity:0.7;font-size:11px;">P2P Host</small>
+        </button>
+
+        <button id="btn-mode-join" class="mode-btn">
+          <span style="font-size:20px;">🔗</span>
+          <span>Gabung Room</span>
+          <small style="opacity:0.7;font-size:11px;">P2P Tamu</small>
+        </button>
+      </div>
+
+      <!-- LOCAL SECTION -->
+      <div id="local-section" class="mode-content">
+        <h3 style="margin-bottom:8px;font-size:16px;">Mode 2 Pemain (1 Komputer)</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;max-width:380px;">
+          Main bersama teman di satu layar/keyboard yang sama tanpa memerlukan jaringan internet.
+        </p>
+        <div style="display:flex;gap:16px;margin-bottom:18px;font-size:13px;text-align:left;">
+          <div style="background:rgba(255,77,77,0.15);padding:10px 14px;border-radius:10px;border:1px solid rgba(255,77,77,0.3);">
+            <strong style="color:var(--fire-primary);">🔥 Fireboy:</strong><br>Tombol <strong>Panah (← ↑ →)</strong>
+          </div>
+          <div style="background:rgba(51,204,255,0.15);padding:10px 14px;border-radius:10px;border:1px solid rgba(51,204,255,0.3);">
+            <strong style="color:var(--water-primary);">💧 Watergirl:</strong><br>Tombol <strong>W, A, D</strong>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="window.p2pGame.startLocalMode()">Mulai Main Sekarang 🎮</button>
+      </div>
+
+      <!-- HOST SECTION -->
+      <div id="host-section" class="mode-content" style="display:none;">
+        <h3 style="margin-bottom:4px;font-size:16px;">Bagikan Kode Room ke Teman Anda</h3>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">
+          Pemain ke-2 dapat bergabung dari komputer atau perangkat lain via WebRTC P2P langsung!
+        </p>
+
+        <div id="host-room-code" class="room-code-display">----</div>
+
+        <div style="display:flex;gap:10px;margin-bottom:12px;">
+          <button id="btn-copy-link" class="hud-btn" style="background:#2f3542;">📋 Salin Link Undangan</button>
+          <button id="btn-show-qr" class="hud-btn" style="background:#2f3542;">📱 Scan QR Code</button>
+        </div>
+
+        <div class="role-select-box">
+          <label for="host-role-select">Pilih Karakter Anda:</label>
+          <select id="host-role-select" class="styled-select">
+            <option value="fb" selected>🔥 Fireboy (Panah)</option>
+            <option value="wg">💧 Watergirl (W, A, D)</option>
+          </select>
+        </div>
+
+        <div id="host-status-text" class="status-info">
+          <span class="spinner"></span> Menyiapkan room P2P...
+        </div>
+
+        <div id="host-online-banner" style="display:none;margin-top:12px;padding:8px 12px;background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:8px;font-size:12px;text-align:left;color:#a8ffc4;">
+          <strong>🌐 Link Teman Jauh Aktif:</strong><br>
+          <span id="host-online-url" style="word-break:break-all;color:#2ecc71;font-size:11px;"></span>
+        </div>
+        <div id="host-offline-tip" style="margin-top:12px;font-size:11px;color:rgba(255,255,255,0.65);background:rgba(255,255,255,0.05);padding:8px 10px;border-radius:8px;text-align:left;">
+          💡 <strong>Tips Teman Jauh:</strong> Jika teman Anda berbeda rumah / beda Wi-Fi, jalankan <strong>start_online.bat</strong> atau main via Vercel online!
+        </div>
+      </div>
+
+      <!-- JOIN SECTION -->
+      <div id="join-section" class="mode-content" style="display:none;">
+        <h3 style="margin-bottom:4px;font-size:16px;">Gabung ke Room Teman</h3>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">
+          Masukkan 4 karakter kode room yang diberikan oleh Host.
+        </p>
+
+        <div class="input-group">
+          <input type="text" id="join-room-input" class="styled-input" placeholder="Contoh: A7B2" maxlength="8">
+          <button id="btn-connect-join" class="btn-primary blue">Gabung</button>
+        </div>
+
+        <div id="join-status-text" class="status-info">
+          Siap menghubungkan via WebRTC P2P.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =========================================
+       QR CODE MODAL (FOR MOBILE SCAN)
+  ========================================= -->
+  <div id="qr-modal">
+    <div class="qr-card">
+      <h3 style="font-size:16px;margin-bottom:8px;">Scan untuk Bergabung</h3>
+      <p style="font-size:12px;color:#666;margin-bottom:12px;">Buka kamera HP Anda untuk bergabung langsung ke permainan ini:</p>
+      <div id="qr-code-canvas"></div>
+      <button id="btn-close-qr" class="hud-btn" style="background:#333;color:#fff;margin-top:12px;width:100%;">Tutup</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="p2p-toast"></div>
+
+  <!-- =========================================
+       SCRIPTS
+  ========================================= -->
+  <!-- 1. Offline PeerJS for WebRTC Direct P2P Connections -->
+  <script src="../../js/peerjs.min.js"></script>
+
+  <!-- 2. QR Code Generator for Quick Mobile Pairing -->
+  <script src="../../js/qrcode.min.js"></script>
+
+  <!-- 3. Fireboy & Watergirl P2P Multiplayer Core Engine -->
+  <script src="../../js/p2p-multiplayer.js"></script>
+
+  <!-- Fairy Tales Engine Loader -->
+  <script src="bower_components/requirejs/require.js"></script>
+  <script type="text/javascript">
+    function addScript(src, buster, callback) {
+      var sc = document.createElement('script');
+      sc.setAttribute('src', src + '?v=' + buster);
+      if (typeof callback === 'function') sc.onload = callback;
+      document.body.appendChild(sc);
+    }
+    addScript('version.js', Date.now(), function() {
+      require(["fairy-tales.min.js?vvvv=14&v=" + (window.version || '1')]);
+    });
+  </script>
+
+</body>
+</html>
